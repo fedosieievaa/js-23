@@ -6,11 +6,15 @@ export const POST_TWEET = "POST_TWEET";
 export const getUsers = (data) => ({
     type: GET_USERS,
     payload: {
-        ...data,
+        ...data
     },
 })
-export const getTweets = () => ({
+
+export const getTweets = (data) => ({
     type: GET_TWEETS,
+    payload: {
+        ...data
+    },
 })
 export const postUser = (user) => ({
     type: POST_USER,

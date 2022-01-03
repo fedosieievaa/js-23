@@ -1,8 +1,8 @@
-import { GET_USERS } from "./actions"
+import { GET_USERS, GET_TWEETS } from "./actions"
 
 const initialState = {
     users: [],
-    state1: ""
+    tweets: [],
 }
 
 export const reducer = (state = initialState, action) => {
@@ -11,6 +11,11 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 users: action.payload,
+            }
+        case GET_TWEETS:
+            return {
+                ...state,
+                tweets: action.payload,
             }
         default:
             return state;
