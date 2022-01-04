@@ -1,30 +1,47 @@
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import  { getTweets, getUsers } from './redux/actions';
+
 export default function Tweets() {
+    const dispatch = useDispatch();
+    const allUsers = useSelector((state) => state.users);
+    const allTweets = useSelector((state) => state.tweets);
 
-    const getTweets = (id, content, image) => {
-        const tweets = document.querySelector('#tweets')
-        const template=`
-            <div class="tweet_container" id=${id}>
-                <p class="tweet_content">${content}</p>
-                <img class="tweet_image" src=${image} alt="avatar" width="400px" />
-            </div>`
-        tweets.insertAdjacentHTML("beforeend", template);
+    const fetchTweets = async () => {
+        const usersAPI = await fetch(` http://domer.tech:9999/users/`, { method: "GET" });
+        const tweetsAPI = await fetch(` http://domer.tech:9999/tweets/`, { method: "GET" });
+        const usersResponse = await usersAPI.json();
+        const tweetsResponse = await tweetsAPI.json();
+        dispatch(getUsers(usersResponse.data));
+        dispatch(getTweets(tweetsResponse.data));
+        console.log(tweetsResponse.data)
     }
 
-    const fetchTweets = () => {
-        const server = fetch(
-            ` http://domer.tech:9999/tweets/`, {
-                method: "GET",
-            }
-        );
-        server
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data.data)
-                data.data.map(({ id, content, image }) => getTweets(id, content, image))})
-            .catch((err) => {
-                console.log("Error:", err);
-            })
-    }
+    useEffect(() => fetchTweets(),[]);
 
-    return (<div id="tweets">{fetchTweets()}</div>)
+    return (
+        <div className="tweets">
+            {Object.values(allTweets).map((data) => {
+                const userId = data.userId;
+                const user = Object.values(allUsers).find((data) =>  userId === data.id)
+               return( 
+                <div id={userId} className="tweet_container"  key={data.id}>
+                    <div className="user_info">
+                        <div className="tweet_block">
+                            <div className="tweet_block_inner">
+                                <img className="tweet_avatar" src={user.avatar} alt="avatar"/>
+                            </div>
+                        </div>
+                        <div>
+                            <span className="tweet_user_name">{user.name}</span>
+                            <span className="tweet_user_username">{user.username}</span>
+                        </div>
+                    </div>
+                    <div className="content_container">
+                        <p className="tweet_content">{data.content}</p>
+                        <img className="tweet_image" src={data.image} alt="avatar" />
+                    </div>
+                </div>)})
+        }
+        </div>)
 }

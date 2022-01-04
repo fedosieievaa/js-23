@@ -7,12 +7,13 @@ export default function Users() {
     const allUsers = useSelector((state) => state.users);
     
     const fetchUsers = async () => {
-        const server = await fetch(` http://domer.tech:9999/users/`, { method: "GET" });
-        const response = await server.json();
-        dispatch(getUsers(response.data));
+        const usersAPI = await fetch(` http://domer.tech:9999/users/`, { method: "GET" });
+        const usersResponse = await usersAPI.json();
+        console.log(usersResponse.data)
+        dispatch(getUsers(usersResponse.data));
     }
 
-    useEffect(() => fetchUsers());
+    useEffect(() => fetchUsers(),[]);
     
     return (
         <div className="users">
